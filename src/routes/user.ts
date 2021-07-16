@@ -1,6 +1,5 @@
 import {Router, routes} from "../lib/decorators/router";
 import {Request, Response} from "express";
-import path from 'path';
 import User, {IUser} from "../models/User";
 import ExposableError from "../classes/ExposableError";
 import TokenManager from "../classes/TokenManager";
@@ -72,7 +71,10 @@ class UserRoutes {
         const user = await User.findById(req.params.id, ['profile_image']).populate("profile_image");
         if (!user) throw NotFoundError("유저를");
 
-        const profile_image_path = user.profile_image ? (user.profile_image as ImageDocument).path : path.resolve(__dirname, '../default_profile.png');
+        if (!user.profile_image) {
+            throw NotFoundError("프로필 사진을");
+        }
+        const profile_image_path =  (user.profile_image as ImageDocument).path;
 
         res.sendFile(profile_image_path);
     }
