@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    command: yarn dev
+    volumes:
+      - .:/usr/app
+    ports:
+      - 4000:4000
+    links:
+      - mongo
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: sunrinthon
+    volumes:
+      - db:/data/db
+    logging:
+      driver: none
+  mongo_express:
+    image: mongo-express
+    ports:
+      - 8080:8081
+    links:
+      - mongo
+    logging:
+      driver: none
+volumes:
+  db:
