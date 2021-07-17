@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
+import { NotFoundError } from "../lib/declarations/error";
 import {Router, routes} from "../lib/decorators/router";
 import getUser from "../lib/getUser";
 import authMiddleware from "../lib/middlewares/auth";
 import Post from "../models/Post";
+
 
 @Router
 class PostRoutes {
@@ -45,6 +47,24 @@ class PostRoutes {
             data
         });
     }
+    
+    @routes("get", "/api/v1/post/:id")
+    async getPost(req: Request, res: Response) {
+        const post = await this.getPostFromDB(req.params.id);
+        
+        res.json({
+            success: true,
+            data: post
+        });
+    }
+    private async getPostFromDB(id: string) {
+        const error = NotFoundError("글을");
+        const post = await Post.findById(id).populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]).exec();
+
+        if (!post) throw error;
+
+        return post;
+    }
 }
 /**
  * @swagger
@@ -77,7 +97,7 @@ class PostRoutes {
  *                      data:
  *                          $ref: "#/definitions/Post"
  *  get:
- *      summary: 글을 가져옵니다.
+ *      summary: 글 목록을 가져옵니다.
  *      tags:
  *          - Post
  *      produces:
@@ -104,5 +124,21 @@ class PostRoutes {
  *                          type: array
  *                          items:
  *                              $ref: "#/definitions/Post"
+ * /api/v1/post/:id:
+ *  get:
+ *      summary: 글을 가져옵니다.
+ *      tags:
+ *          - Post
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          $ref: "#/definitions/Post"
  */
 export default PostRoutes;
