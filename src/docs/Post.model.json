@@ -25,6 +25,13 @@
                     "contents": {
                         "type": "string"
                     },
+                    "voted_user": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "이미 투표한 유저들의 아이디. 클라이언트에서 비교해줄 것. (서버에서는 로그인 토큰을 안 받아 비교 불가)"
+                    },
                     "by": {"$ref": "#/definitions/User"},
                     "vote": {
                         "type": "number"

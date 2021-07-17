@@ -7,6 +7,7 @@ import Post, { Comment } from "../models/Post";
 import axios from 'axios';
 import _ from "lodash";
 import Image from "../models/Image";
+import ExposableError from "../classes/ExposableError";
 
 @Router
 class PostRoutes {
@@ -87,6 +88,26 @@ class PostRoutes {
         post.comments.push(comment);
         await post.save();
 
+        res.json({
+            success: true,
+            data: post
+        });
+    }
+    @routes("put", "/api/v1/post/:id/comment/:comment_id/vote", {middlewares: [authMiddleware()]})
+    async voteComment(req: Request, res: Response) {
+        const post = await this.getPostFromDB(req.params.id);
+
+        const idx = _.findIndex(post.comments, (o) => o._id == req.params.comment_id);
+        if (idx === -1) throw NotFoundError("댓글을");
+        if (post.comments[idx].voted_user.filter((o) => o == res.locals.user.id).length > 0)
+            throw new ExposableError("이미 투표하였습니다.", "ALREADY_VOTED_ERROR", 400);
+        
+        post.comments[idx].vote += 1;
+        post.comments[idx].voted_user.push(res.locals.user.id);
+
+        await post.save();
+
+        post.comments = _.sortBy(post.comments, "vote").reverse();
         res.json({
             success: true,
             data: post
@@ -207,6 +228,7 @@ class PostRoutes {
  *              properties:
  *                  contents:
  *                      type: string
+ *        - $ref: "#/schemas/AuthHeader"
  *      responses:
  *          200:
  *              schema:
@@ -216,5 +238,34 @@ class PostRoutes {
  *                          type: boolean
  *                      data:
  *                          $ref: "#/definitions/Post"
+ * /api/v1/post/:id/comment/:comment_id/vote:
+ *  post:
+ *      summary: 댓글에 투표를 합니다. (두 번하면 오류 발생!)
+ *      tags:
+ *          - Post
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *        - in: parameter
+ *          name: id
+ *          type: string
+ *          description: 글의 _id
+ *        - in: parameter
+ *          name: comment_id
+ *          type: string
+ *          description: 댓글의 _id
+ *        - $ref: "#/schemas/AuthHeader"
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          $ref: "#/definitions/Post"
+ *          500:
+ *              schema:
+ *                  $ref: "#/schemas/Error"
  */
 export default PostRoutes;

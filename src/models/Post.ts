@@ -19,6 +19,11 @@ const CommentSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    voted_user: {
+        type: [mongoose.SchemaTypes.ObjectId],
+        ref: 'User',
+        default: []
     }
 });
 export const Comment = mongoose.model<CommentDocument>("Comment", CommentSchema);
@@ -56,6 +61,7 @@ export interface IComment {
     by: mongoose.Types.ObjectId,
     vote: number,
     createdAt: Date,
+voted_user: mongoose.Types.ObjectId[]
 }
 export interface IPost {
     title: string,
