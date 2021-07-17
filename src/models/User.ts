@@ -50,9 +50,15 @@ const userSchema = new mongoose.Schema({
     },
     createdAt: {
        type: Date,
-        default: Date.now
+        default: Date.now,
+        get(v: Date) {
+            return new Date(v.getTime() + 1000 * 60 * 60 * 9);
+        }
     }
 });
+
+userSchema.set("toObject", {getters: true});
+userSchema.set("toJSON", {getters: true});
 
 userSchema.methods.comparePassword = function (this:UserDocument, password: string) {
     const passwordEncrypted = crypto.pbkdf2Sync(password, this.encKey, 100000, 64, 'sha512').toString('base64');

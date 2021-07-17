@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { ImageDocument } from './Image';
 
-
 const CommentSchema = new mongoose.Schema({
     by: {
         type: mongoose.SchemaTypes.ObjectId,
@@ -18,7 +17,10 @@ const CommentSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        get(v: Date) {
+            return new Date(v.getTime() + 1000 * 60 * 60 * 9);
+        }
     },
     voted_user: {
         type: [mongoose.SchemaTypes.ObjectId],
@@ -26,6 +28,9 @@ const CommentSchema = new mongoose.Schema({
         default: []
     }
 });
+
+CommentSchema.set('toJSON', {getters: true});
+CommentSchema.set('toObject', {getters: true});
 export const Comment = mongoose.model<CommentDocument>("Comment", CommentSchema);
 
 const PostSchema = new mongoose.Schema({
@@ -48,7 +53,10 @@ const PostSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        get(v: Date) {
+            return new Date(v.getTime() + 1000 * 60 * 60 * 9);
+        }
     },
     portfolio_image: {
         type: mongoose.SchemaTypes.ObjectId,
@@ -56,6 +64,8 @@ const PostSchema = new mongoose.Schema({
     }
 })
 
+PostSchema.set('toJSON', {getters: true});
+PostSchema.set('toObject', {getters: true});
 export interface IComment {
     contents: string,
     by: mongoose.Types.ObjectId,
