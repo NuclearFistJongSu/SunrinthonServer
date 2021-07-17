@@ -11,7 +11,7 @@ const options = {
 			title: "Stocker",
 			description: "Stocker API",
 		},
-		host: "sunrinthon.heroku.com",
+		host: "sunrinthon.herokuapp.com",
 		basePath: "/",
 	},
 	apis: ["**/routes/*.ts"],
