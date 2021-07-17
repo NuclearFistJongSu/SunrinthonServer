@@ -1,6 +1,9 @@
 {
     "type": "object",
     "properties": {
+        "_id": {
+            "type": "string"
+        },
         "userId": {
             "type": "string"
         },
@@ -33,6 +36,7 @@
         }
     },
     "example": {
+        "_id": "60f26075e3d78d037fc8e187",
         "userId": "kbotk1234",
         "password": "(암호화)",
         "createdAt": "2020-12-21 12:34:56",
