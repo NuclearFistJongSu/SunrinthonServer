@@ -1,0 +1,20 @@
+{
+	"type": "object",
+	"required": ["post_id", "comment_id"],
+	"properties": {
+		"userId": {
+			"type": "string"
+		},
+		"password": {
+			"type": "string"
+		},
+		"username": {
+			"type": "string"
+		}
+	},
+	"example": {
+		"userId": "userId(6자이상)",
+		"password": "password",
+		"username": "username"
+	}
+}

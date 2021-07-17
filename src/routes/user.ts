@@ -9,9 +9,37 @@ import {LoginRequiredError, NotFoundError} from "../lib/declarations/error";
 import {Types} from "mongoose";
 import ImageManager from "../classes/ImageManager";
 import {ImageDocument} from "../models/Image";
-
+/**
+ * @swagger
+ * /api/v1/user:
+ *  post:
+ *      summary: 회원가입
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - in: body
+ *            name: body
+ *            type: object
+ *            schema:
+ *              $ref: "#/schemas/SignUp"
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                  example:
+ *                      success: false
+ *          500:
+ *              schema:
+ *                  $ref: "#/schemas/Error"
+ */
 @Router
 class UserRoutes {
+
     @routes("post", "/api/v1/user")
     async signUp(req: Request, res: Response) {
         const {userId, password, username} = req.body;
