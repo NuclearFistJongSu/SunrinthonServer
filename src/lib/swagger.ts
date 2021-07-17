@@ -11,7 +11,7 @@ const options = {
 			title: "Stocker",
 			description: "Stocker API",
 		},
-		host: "sunrinthon.herokuapp.com",
+		host: process.env.NODE_ENV === "production" ? "sunrinthon.herokuapp.com" : "localhost:4000",
 		basePath: "/",
 	},
 	apis: ["**/routes/*.ts"],

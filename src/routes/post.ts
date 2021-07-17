@@ -184,13 +184,17 @@ class PostRoutes {
  *                          type: array
  *                          items:
  *                              $ref: "#/definitions/Post"
- * /api/v1/post/:id:
+ * /api/v1/post/{id}:
  *  get:
  *      summary: 글을 가져옵니다.
  *      tags:
  *          - Post
  *      produces:
  *          - application/json
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          type: string
  *      responses:
  *          200:
  *              schema:
@@ -200,7 +204,7 @@ class PostRoutes {
  *                          type: boolean
  *                      data:
  *                          $ref: "#/definitions/Post"
- * /api/v1/post/:id/portfolio_image:
+ * /api/v1/post/{id}/portfolio_image:
  *  get:
  *      summary: 포트폴리오 사진을 가져옵니다. (없으면 404)
  *      tags:
@@ -208,11 +212,15 @@ class PostRoutes {
  *      produces:
  *          - application/json
  *          - image/*
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          type: string
  *      responses:
  *          404:
  *              schema:
  *                  $ref: "#/schemas/ErrorProps"
- * /api/v1/post/:id/comment:
+ * /api/v1/post/{id}/comment:
  *  post:
  *      summary: 댓글을 씁니다.
  *      tags:
@@ -228,6 +236,9 @@ class PostRoutes {
  *              properties:
  *                  contents:
  *                      type: string
+ *        - in: path
+ *          name: id
+ *          type: string
  *        - $ref: "#/schemas/AuthHeader"
  *      responses:
  *          200:
@@ -238,7 +249,7 @@ class PostRoutes {
  *                          type: boolean
  *                      data:
  *                          $ref: "#/definitions/Post"
- * /api/v1/post/:id/comment/:comment_id/vote:
+ * /api/v1/post/{id}/comment/{comment_id}/vote:
  *  post:
  *      summary: 댓글에 투표를 합니다. (두 번하면 오류 발생!)
  *      tags:
@@ -246,11 +257,11 @@ class PostRoutes {
  *      produces:
  *          - application/json
  *      parameters:
- *        - in: parameter
+ *        - in: path
  *          name: id
  *          type: string
  *          description: 글의 _id
- *        - in: parameter
+ *        - in: path
  *          name: comment_id
  *          type: string
  *          description: 댓글의 _id
