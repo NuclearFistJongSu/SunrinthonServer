@@ -5,6 +5,7 @@ import getUser from "../lib/getUser";
 import authMiddleware from "../lib/middlewares/auth";
 import Post, { Comment } from "../models/Post";
 import axios from 'axios';
+import _ from "lodash";
 import Image from "../models/Image";
 
 @Router
@@ -95,10 +96,12 @@ class PostRoutes {
         const error = NotFoundError("글을");
         const post = await Post.findById(id)
         .populate("comments.by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"])
-        .populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]).exec();
+        .populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"])
+        .exec();
 
         if (!post) throw error;
 
+        post.comments = _.sortBy(post.comments, "vote").reverse();
         return post;
     }
 }
