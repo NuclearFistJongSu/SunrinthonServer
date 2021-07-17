@@ -31,7 +31,7 @@ class PostRoutes {
         const {limit, page} = req.query;
 
         const posts = Post.find({}, ["title, by"])
-        .populate("by", ["username", "_id", "userId"]);
+        .populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]);
 
         if (limit) {
             const p: any = page ? page : 1;
@@ -85,12 +85,12 @@ class PostRoutes {
  *      parameters:
  *          - in: query
  *            name: limit
- *            summary: 글 갯수를 제한합니다.
+ *            description: 글 갯수를 제한합니다.
  *            schema:
  *              type: int
  *          - in: query
  *            name: page
- *            summary: 글 갯수를 제한할 때, 페이지를 선택합니다.
+ *            description: 글 갯수를 제한할 때, 페이지를 선택합니다.
  *            schema:
  *              type: int
  *      responses:
