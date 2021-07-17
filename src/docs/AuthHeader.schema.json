@@ -1,0 +1,14 @@
+{
+    "in": "header",
+    "name": "Header",
+    "type": "object",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "Authorization": "string"
+        },
+        "example": {
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZjIzYzU4ZDMxOThlMDAyYzdhOGNhOCIsInVzZXJJZCI6ImZ1Y2tpbmcxMiIsInVzZXJuYW1lIjoibW90aGVyZnVjayIsImlhdCI6MTYyNjQ4ODUwOX0.qD__3haRZY2RIC1SYLYiMsV8aPr3k7Ph3IlPKKKvABg"
+        }
+    }
+}
