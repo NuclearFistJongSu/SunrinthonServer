@@ -250,7 +250,7 @@ class PostRoutes {
  *                      data:
  *                          $ref: "#/definitions/Post"
  * /api/v1/post/{id}/comment/{comment_id}/vote:
- *  post:
+ *  put:
  *      summary: 댓글에 투표를 합니다. (두 번하면 오류 발생!)
  *      tags:
  *          - Post
