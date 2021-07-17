@@ -10,6 +10,7 @@ import {Types} from "mongoose";
 import ImageManager from "../classes/ImageManager";
 import {ImageDocument} from "../models/Image";
 import axios from 'axios';
+import Post from "../models/Post";
 
 /**
  * @swagger
@@ -30,7 +31,13 @@ import axios from 'axios';
  *                      success:
  *                          type: boolean
  *                      data:
- *                          $ref: "#/definitions/User"
+ *                          properties:
+ *                              user:
+ *                                  $ref: "#/definitions/User"
+ *                              posts:
+ *                                  type: array
+ *                                  items:
+ *                                      $ref: "#/definitions/Post"
  *  post:
  *      summary: 회원가입
  *      tags:
@@ -179,10 +186,14 @@ class UserRoutes {
         if (!user) throw error;
 
         const userObj = user.toObject();
+        const posts = await Post.find({by: user._id});
 
         res.json({
             success: true,
-            data: userObj
+            data: {
+                user: userObj,
+                posts
+            }
         });
     }
     @routes("put", "/api/v1/user", {middlewares: [authMiddleware()]})

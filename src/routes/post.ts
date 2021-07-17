@@ -36,7 +36,7 @@ class PostRoutes {
     async getPosts(req: Request, res: Response) {
         const {limit, page} = req.query;
 
-        const posts = Post.find({}, ["title, by"])
+        const posts = Post.find()
         .populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]);
 
         if (limit) {
