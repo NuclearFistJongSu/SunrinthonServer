@@ -4,7 +4,8 @@ import {Router, routes} from "../lib/decorators/router";
 import getUser from "../lib/getUser";
 import authMiddleware from "../lib/middlewares/auth";
 import Post from "../models/Post";
-
+import axios from 'axios';
+import Image from "../models/Image";
 
 @Router
 class PostRoutes {
@@ -17,7 +18,8 @@ class PostRoutes {
         const post = new Post({
             title,
             contents,
-            by: user._id
+            by: user._id,
+            portfolio_image: user.portfolio_image
         });
 
         await post.save();
@@ -56,6 +58,22 @@ class PostRoutes {
             success: true,
             data: post
         });
+    }
+    @routes("get", "/api/v1/post/:id/portfolio_image")
+    async getPostImage(req: Request, res: Response) {
+        const post = await this.getPostFromDB(req.params.id);
+        if (!post.portfolio_image) {
+            throw NotFoundError("포트폴리오 사진을");
+        }
+        const image = await Image.findById(post.portfolio_image);
+        if (!image) {
+            throw NotFoundError("포트폴리오 사진을");
+        }
+        const portfolio_image_path =  (image).path;
+
+        console.log(portfolio_image_path);
+        const {data} = await axios.get(portfolio_image_path, {responseType: "stream"});
+        data.pipe(res);
     }
     private async getPostFromDB(id: string) {
         const error = NotFoundError("글을");
@@ -140,5 +158,17 @@ class PostRoutes {
  *                          type: boolean
  *                      data:
  *                          $ref: "#/definitions/Post"
+ * /api/v1/post/:id/portfolio_image:
+ *  get:
+ *      summary: 포트폴리오 사진을 가져옵니다. (없으면 404)
+ *      tags:
+ *          - Post
+ *      produces:
+ *          - application/json
+ *          - image/*
+ *      responses:
+ *          404:
+ *              schema:
+ *                  $ref: "#/schemas/ErrorProps"
  */
 export default PostRoutes;

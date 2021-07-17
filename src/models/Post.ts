@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ImageDocument } from './Image';
 
 
 const CommentSchema = new mongoose.Schema({
@@ -42,6 +43,10 @@ const PostSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    portfolio_image: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Image'
     }
 })
 
@@ -49,14 +54,15 @@ export interface IComment {
     contents: string,
     by: mongoose.Types.ObjectId,
     vote: number,
-    createdAt: Date
+    createdAt: Date,
 }
 export interface IPost {
     title: string,
     contents: string,
     by: mongoose.Types.ObjectId,
     comments: IComment[],
-    createdAt: Date
+    createdAt: Date,
+    portfolio_image?: mongoose.Types.ObjectId | ImageDocument
 }
 
 export interface PostDocument extends mongoose.Document, IPost {}
