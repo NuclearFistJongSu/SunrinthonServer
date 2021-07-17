@@ -21,6 +21,7 @@ const CommentSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+export const Comment = mongoose.model<CommentDocument>("Comment", CommentSchema);
 
 const PostSchema = new mongoose.Schema({
     title: {
@@ -60,13 +61,13 @@ export interface IPost {
     title: string,
     contents: string,
     by: mongoose.Types.ObjectId,
-    comments: IComment[],
+    comments: CommentDocument[],
     createdAt: Date,
     portfolio_image?: mongoose.Types.ObjectId | ImageDocument
 }
 
 export interface PostDocument extends mongoose.Document, IPost {}
-
+export interface CommentDocument extends mongoose.Document, IComment {}
 const Post = mongoose.model<PostDocument>("Post", PostSchema);
 
 export default Post;

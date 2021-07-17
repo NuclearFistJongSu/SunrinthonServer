@@ -3,7 +3,7 @@ import { NotFoundError } from "../lib/declarations/error";
 import {Router, routes} from "../lib/decorators/router";
 import getUser from "../lib/getUser";
 import authMiddleware from "../lib/middlewares/auth";
-import Post from "../models/Post";
+import Post, { Comment } from "../models/Post";
 import axios from 'axios';
 import Image from "../models/Image";
 
@@ -71,13 +71,31 @@ class PostRoutes {
         }
         const portfolio_image_path =  (image).path;
 
-        console.log(portfolio_image_path);
         const {data} = await axios.get(portfolio_image_path, {responseType: "stream"});
         data.pipe(res);
     }
+    @routes("post", "/api/v1/post/:id/comment", {middlewares: [authMiddleware()]})
+    async postComment(req: Request, res: Response) {
+        const {contents} = req.body;
+        const post = await this.getPostFromDB(req.params.id);
+        const comment = new Comment({
+            contents,
+            by: res.locals.user.id
+        });
+        
+        post.comments.push(comment);
+        await post.save();
+
+        res.json({
+            success: true,
+            data: post
+        });
+    }
     private async getPostFromDB(id: string) {
         const error = NotFoundError("글을");
-        const post = await Post.findById(id).populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]).exec();
+        const post = await Post.findById(id)
+        .populate("comments.by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"])
+        .populate("by", ["username", "_id", "userId", "createdAt", "isExpert", "information", "career"]).exec();
 
         if (!post) throw error;
 
@@ -170,5 +188,30 @@ class PostRoutes {
  *          404:
  *              schema:
  *                  $ref: "#/schemas/ErrorProps"
+ * /api/v1/post/:id/comment:
+ *  post:
+ *      summary: 댓글을 씁니다.
+ *      tags:
+ *          - Post
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *        - in: body
+ *          name: body
+ *          type: object
+ *          schema:
+ *              type: object
+ *              properties:
+ *                  contents:
+ *                      type: string
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          $ref: "#/definitions/Post"
  */
 export default PostRoutes;
