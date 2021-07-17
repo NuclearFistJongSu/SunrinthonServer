@@ -12,6 +12,23 @@ import {ImageDocument} from "../models/Image";
 /**
  * @swagger
  * /api/v1/user:
+ *  get:
+ *      summary: 유저 정보를 가져옵니다.
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - $ref: "#/schemas/AuthHeader"
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          $ref: "#/definitions/User"
  *  post:
  *      summary: 회원가입
  *      tags:
@@ -31,6 +48,23 @@ import {ImageDocument} from "../models/Image";
  *          500:
  *              schema:
  *                  $ref: "#/schemas/Error"
+ *  put:
+ *      summary: 유저 정보를 수정합니다.
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - in: body
+ *            name: body
+ *            type: object
+ *            schema:
+ *              $ref: "#/definitions/User"
+ *          - $ref: "#/schemas/AuthHeader"
+ *      responses:
+ *          200:
+ *              schema:
+ *                  $ref: "#/schemas/Success"
  * /api/v1/user/issue:
  *  post:
  *      summary: 로그인
@@ -90,23 +124,6 @@ import {ImageDocument} from "../models/Image";
  *            schema:
  *              $ref: "#/schemas/ProfilePhoto"
  *          - $ref: "#/schemas/AuthHeader"
- * /api/v1/user/:id:
- *  get:
- *      summary: 유저 정보를 가져옵니다.
- *      tags:
- *          - User
- *      produces:
- *          - application/json
- *      responses:
- *          200:
- *              schema:
- *                  type: object
- *                  properties:
- *                      success:
- *                          type: boolean
- *                      data:
- *                          $ref: "#/schemas/User"
-
  */
 
 @Router
@@ -121,7 +138,35 @@ class UserRoutes {
             success: true
         });
     }
+    @routes("get", "/api/v1/user", {middlewares: [authMiddleware()]})
+    async getUser(req: Request, res: Response) {
+        const error = NotFoundError("유저를");
+        if (!Types.ObjectId.isValid(res.locals.user.id)) throw error;
 
+        const user = await User.findById(res.locals.user.id, ["username"]);
+        if (!user) throw error;
+
+        const userObj = user.toObject();
+
+        res.json({
+            success: true,
+            data: userObj
+        });
+    }
+    @routes("put", "/api/v1/user", {middlewares: [authMiddleware()]})
+    async putUser(req: Request, res: Response) {
+        const data = req.body;
+        const error = NotFoundError("유저를");
+        if (!Types.ObjectId.isValid(res.locals.user.id)) throw error;
+        const user = await User.findById(res.locals.user.id);
+        if (!user) throw error;
+
+        await user.updateOne(data);
+
+        res.json({
+            success: true
+        });
+    }
     @routes("post", "/api/v1/user/issue")
     async createToken(req: Request, res: Response) {
         const {userId, password} = req.body;
@@ -150,21 +195,8 @@ class UserRoutes {
             success: true
         });
     }
-    @routes("get", "/api/v1/user/:id")
-    async getUser(req: Request, res: Response) {
-        const error = NotFoundError("유저를");
-        if (!Types.ObjectId.isValid(req.params.id)) throw error;
 
-        const user = await User.findById(req.params.id, ["username"]);
-        if (!user) throw error;
 
-        const userObj = user.toObject();
-
-        res.json({
-            success: true,
-            data: userObj
-        });
-    }
     @routes("get", "/api/v1/user/:id/profile_image")
     async getUserProfile(req: Request, res: Response) {
         const user = await User.findById(req.params.id, ['profile_image']).populate("profile_image");

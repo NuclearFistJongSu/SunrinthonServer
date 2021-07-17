@@ -23,10 +23,16 @@ const dirs = fs.readdirSync(swaggerPath);
 
 swaggerSpec.schemas = {};
 for (const [index, fileName] of _.entries(dirs)) {
-    const defenitionName = fileName.replace(".schema.json", "");
-    swaggerSpec.schemas[defenitionName] = JSON.parse(
+	const [name, type] = fileName.split(".");
+	const data = JSON.parse(
         fs.readFileSync(path.join(swaggerPath, fileName)).toString()
-    )
+    );
+
+	if (type === "schema")
+		swaggerSpec.schemas[name] = data;
+	else {
+		swaggerSpec.definitions[name] = data;
+	}
 }
 
 export default swaggerSpec;

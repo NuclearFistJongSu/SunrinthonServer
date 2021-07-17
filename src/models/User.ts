@@ -32,6 +32,18 @@ const userSchema = new mongoose.Schema({
        type: mongoose.SchemaTypes.ObjectId,
         ref: 'Image'
     },
+    isExpert: {
+        type: Boolean,
+        default: false
+    },
+    information: {
+        type: String,
+        default: ""
+    },
+    career: {
+        type: String,
+        default: ""
+    },
     createdAt: {
        type: Date,
         default: Date.now

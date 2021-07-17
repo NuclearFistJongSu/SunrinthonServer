@@ -18,11 +18,26 @@
         },
         "createdAt": {
             "type": "datetime"
+        },
+        "isExpert": {
+            "type": "boolean",
+            "default": "false"
+        },
+        "information": {
+            "type": "string",
+            "default": ""
+        },
+        "career": {
+            "type": "string",
+            "default": ""
         }
     },
     "example": {
         "userId": "kbotk1234",
         "password": "(암호화)",
-        "createdAt": "2020-12-21 12:34:56"
+        "createdAt": "2020-12-21 12:34:56",
+        "isExpert": false,
+        "information": "(대충 자기소개)",
+        "career": "(대충 커리어)"
     }
 }
