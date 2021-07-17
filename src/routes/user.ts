@@ -108,9 +108,9 @@ import {ImageDocument} from "../models/Image";
  *                          $ref: "#/schemas/User"
 
  */
+
 @Router
 class UserRoutes {
-
     @routes("post", "/api/v1/user")
     async signUp(req: Request, res: Response) {
         const {userId, password, username} = req.body;
