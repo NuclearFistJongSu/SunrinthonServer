@@ -82,7 +82,6 @@ import Post from "../models/Post";
  *      produces:
  *          - application/json
  *      parameters:
- *          - $ref: "#/schemas/AuthHeader"
  *          - in: path
  *            name: id
  *            type: string
