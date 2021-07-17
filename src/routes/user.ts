@@ -182,7 +182,7 @@ class UserRoutes {
         const error = NotFoundError("유저를");
         if (!Types.ObjectId.isValid(res.locals.user.id)) throw error;
 
-        const user = await User.findById(res.locals.user.id, ["username"]);
+        const user = await User.findById(res.locals.user.id);
         if (!user) throw error;
 
         const userObj = user.toObject();
