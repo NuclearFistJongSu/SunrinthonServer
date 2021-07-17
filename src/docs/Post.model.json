@@ -2,6 +2,9 @@
     "type": "object",
     "required": ["title", "contents"],
     "properties": {
+        "_id": {
+            "type": "string"
+        },
         "title": {
             "type": "string"
         },
@@ -16,6 +19,9 @@
             "items": {
                 "type": "object",
                 "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
                     "contents": {
                         "type": "string"
                     },
