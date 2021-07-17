@@ -18,7 +18,7 @@ const options = {
 };
 
 const swaggerSpec:any = swaggerJsDoc(options);
-const swaggerPath: string = path.resolve(__dirname, `../docs`, `./`);
+const swaggerPath: string = path.resolve(__dirname, `../../src/docs`, `./`);
 const dirs = fs.readdirSync(swaggerPath);
 
 swaggerSpec.schemas = {};
