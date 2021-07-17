@@ -14,7 +14,7 @@ class ImageManager {
             User.findById(res.locals.user.id)
                 .then(user => {
                     const image = new Image({
-                        path: req.file.path,
+                        path: (req.file as any).location,
                         mimeType: req.file.mimetype,
                         owner: user ? user._id : undefined
                     } as IImage);

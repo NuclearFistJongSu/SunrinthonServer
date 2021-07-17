@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
        type: mongoose.SchemaTypes.ObjectId,
         ref: 'Image'
     },
+    portfolio_image: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Image'
+    },
     isExpert: {
         type: Boolean,
         default: false
@@ -61,7 +65,8 @@ export interface IUser {
     userId: string,
     password: string,
     username: string,
-    profile_image?: mongoose.Types.ObjectId | ImageDocument
+    profile_image?: mongoose.Types.ObjectId | ImageDocument,
+    portfolio_image?: mongoose.Types.ObjectId | ImageDocument
 }
 export interface UserDocument extends mongoose.Document, IUser{
     createdAt: Date;

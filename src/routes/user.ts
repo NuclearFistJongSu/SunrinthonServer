@@ -9,6 +9,8 @@ import {LoginRequiredError, NotFoundError} from "../lib/declarations/error";
 import {Types} from "mongoose";
 import ImageManager from "../classes/ImageManager";
 import {ImageDocument} from "../models/Image";
+import axios from 'axios';
+
 /**
  * @swagger
  * /api/v1/user:
@@ -124,6 +126,36 @@ import {ImageDocument} from "../models/Image";
  *            schema:
  *              $ref: "#/schemas/ProfilePhoto"
  *          - $ref: "#/schemas/AuthHeader"
+ * /api/v1/user/:id/portfolio_image:
+ *  get:
+ *      summary: 포트폴리오 사진을 가져옵니다. (없으면 404)
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *          - image/*
+ *      responses:
+ *          404:
+ *              schema:
+ *                  $ref: "#/schemas/ErrorProps"
+ * /api/v1/user/portfolio_image:
+ *  put:
+ *      summary: 포트폴리오 사진을 등록합니다.
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              schema:
+ *                  $ref: "#/schemas/Success"
+ *      parameters:
+ *          - in: body
+ *            name: body
+ *            type: object
+ *            schema:
+ *              $ref: "#/schemas/ProfilePhoto"
+ *          - $ref: "#/schemas/AuthHeader"
  */
 
 @Router
@@ -207,7 +239,37 @@ class UserRoutes {
         }
         const profile_image_path =  (user.profile_image as ImageDocument).path;
 
-        res.sendFile(profile_image_path);
+        const {data} = await axios.get(profile_image_path, {responseType: "stream"});
+        data.pipe(res);
+    }
+
+    @routes("put", "/api/v1/user/portfolio_image", {
+        middlewares: [authMiddleware(), upload.single("image"), ImageManager.single()]
+    })
+    async putPortfolioImage(req:Request, res: Response) {
+        const user = await User.findById(res.locals.user.id);
+        if (!user) throw LoginRequiredError;
+
+        user.portfolio_image = res.locals.image._id;
+        await user.save();
+        res.json({
+            success: true
+        });
+    }
+
+
+    @routes("get", "/api/v1/user/:id/portfolio_image")
+    async getUserPortfolio(req: Request, res: Response) {
+        const user = await User.findById(req.params.id, ['portfolio_image']).populate("portfolio_image");
+        if (!user) throw NotFoundError("유저를");
+
+        if (!user.portfolio_image) {
+            throw NotFoundError("프로필 사진을");
+        }
+        const portfolio_image_path =  (user.portfolio_image as ImageDocument).path;
+
+        const {data} = await axios.get(portfolio_image_path, {responseType: "stream"});
+        data.pipe(res);
     }
 }
 
