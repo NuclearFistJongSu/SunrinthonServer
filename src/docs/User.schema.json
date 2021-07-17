@@ -1,0 +1,28 @@
+{
+    "type": "object",
+    "properties": {
+        "userId": {
+            "type": "string"
+        },
+        "password": {
+            "type": "string"
+        },
+        "encKey": {
+            "type": "string"
+        },
+        "username": {
+            "type": "string"
+        },
+        "profile_image": {
+            "type": "string"
+        },
+        "createdAt": {
+            "type": "datetime"
+        }
+    },
+    "example": {
+        "userId": "kbotk1234",
+        "password": "(암호화)",
+        "createdAt": "2020-12-21 12:34:56"
+    }
+}

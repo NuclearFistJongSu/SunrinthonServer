@@ -81,6 +81,8 @@ import {ImageDocument} from "../models/Image";
  *          - application/json
  *      responses:
  *          200:
+ *              schema:
+ *                  $ref: "#/schemas/Success"
  *      parameters:
  *          - in: body
  *            name: body
@@ -88,7 +90,23 @@ import {ImageDocument} from "../models/Image";
  *            schema:
  *              $ref: "#/schemas/ProfilePhoto"
  *          - $ref: "#/schemas/AuthHeader"
- *      
+ * /api/v1/user/:id:
+ *  get:
+ *      summary: 유저 정보를 가져옵니다.
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          $ref: "#/schemas/User"
+
  */
 @Router
 class UserRoutes {
