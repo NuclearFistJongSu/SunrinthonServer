@@ -74,6 +74,33 @@ import Post from "../models/Post";
  *          200:
  *              schema:
  *                  $ref: "#/schemas/Success"
+ * /api/v1/user/{id}:
+ *  get:
+ *      summary: 유저 정보를 가져옵니다.
+ *      tags:
+ *          - User
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - $ref: "#/schemas/AuthHeader"
+ *          - in: path
+ *            name: id
+ *            type: string
+ *      responses:
+ *          200:
+ *              schema:
+ *                  type: object
+ *                  properties:
+ *                      success:
+ *                          type: boolean
+ *                      data:
+ *                          properties:
+ *                              user:
+ *                                  $ref: "#/definitions/User"
+ *                              posts:
+ *                                  type: array
+ *                                  items:
+ *                                      $ref: "#/definitions/Post"
  * /api/v1/user/issue:
  *  post:
  *      summary: 로그인
@@ -239,7 +266,25 @@ class UserRoutes {
         });
     }
 
+    @routes("get", "/api/v1/user/:id")
+    async getUserById(req: Request, res: Response) {
+        const error = NotFoundError("유저를");
+        if (!Types.ObjectId.isValid(req.params.id)) throw error;
 
+        const user = await User.findById(req.params.id);
+        if (!user) throw error;
+
+        const userObj = user.toObject();
+        const posts = await Post.find({by: user._id});
+
+        res.json({
+            success: true,
+            data: {
+                user: userObj,
+                posts
+            }
+        });
+    }
     @routes("get", "/api/v1/user/:id/profile_image")
     async getUserProfile(req: Request, res: Response) {
         const user = await User.findById(req.params.id, ['profile_image']).populate("profile_image");
