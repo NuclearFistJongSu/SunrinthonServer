@@ -14,7 +14,7 @@ const options = {
 		host: "sunrinthon.heroku.com",
 		basePath: "/",
 	},
-	apis: ["**/*.ts"],
+	apis: ["**/routes/*.ts"],
 };
 
 const swaggerSpec:any = swaggerJsDoc(options);

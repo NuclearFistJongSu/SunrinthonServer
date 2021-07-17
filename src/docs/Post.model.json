@@ -1,0 +1,36 @@
+{
+    "type": "object",
+    "required": ["title", "contents"],
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "contents": {
+            "type": "string"
+        },
+        "by": {
+            "$ref": "#/definitions/User"
+        },
+        "comments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "contents": {
+                        "type": "string"
+                    },
+                    "by": {"$ref": "#/definitions/User"},
+                    "vote": {
+                        "type": "number"
+                    },
+                    "createdAt": {
+                        "type": "Date"
+                    }
+                }
+            }
+        },
+        "createdAt": {
+            "type": "Date"
+        }
+    }
+}
